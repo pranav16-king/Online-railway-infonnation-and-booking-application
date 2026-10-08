@@ -1,0 +1,6 @@
+*.py
+page_*.png
+test_*.png
+default_*.png
+ui_*.png
+fig*.png

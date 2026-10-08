@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RailSafar - Online Railway Information & Booking System (HCI CIE-1)</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Top Metadata Bar for Academic Submission (CIE-1 HCI) -->
+  <aside class="student-bar">
+    <div class="student-bar-inner">
+      <div class="student-bar-left">
+        <span><strong>MIT Chhatrapati Sambhajinagar</strong> &bull; Dept. of Computer Science & Design</span>
+        <span class="student-pill">HCI CIE-1 Prototype</span>
+      </div>
+      <div>
+        <span>Student: <strong>Pranav Samadhan Khaire</strong> | Roll: <strong>49</strong> (TY-C)</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Application Main Header -->
+  <header class="app-header">
+    <div class="header-container">
+      <a href="#home" class="brand-logo" title="RailSafar Home">
+        <span class="brand-icon">🚆</span>
+        <span>RailSafar</span>
+      </a>
+
+      <nav class="main-nav">
+        <a href="#home" class="nav-link active">Book Trains</a>
+        <a href="#pnr" class="nav-link">PNR Status</a>
+        <a href="#pnr" class="nav-link">Live Running</a>
+        <a href="#results" class="nav-link">Train Schedules</a>
+        <a href="#ticket" class="nav-link">My Bookings</a>
+      </nav>
+
+      <div class="header-meta">
+        <select class="lang-select" aria-label="Select Language">
+          <option value="en" selected>English</option>
+          <option value="mr">मराठी</option>
+          <option value="hi">हिन्दी</option>
+        </select>
+        <div class="user-badge" title="Logged in Passenger">
+          <span>👤</span>
+          <span>Pranav K.</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Prototype Multi-View Navigation Bar (Pure HTML/CSS Switcher) -->
+  <div class="prototype-switcher">
+    <div class="switcher-inner">
+      <span class="switcher-label">HCI Prototype Screens:</span>
+      <a href="#home" class="view-tab">1. Search Trains (Home)</a>
+      <a href="#results" class="view-tab">2. Train Results &amp; Availability</a>
+      <a href="#passengers" class="view-tab">3. Passenger &amp; Berth Picker</a>
+      <a href="#payment" class="view-tab">4. Fare Review &amp; Payment</a>
+      <a href="#ticket" class="view-tab">5. Confirmed Ticket (PNR)</a>
+      <a href="#pnr" class="view-tab">6. Live Train Tracking</a>
+    </div>
+  </div>
+
+  <!-- Main View Container -->
+  <main class="main-content">
+
+    <!-- ================================================================= -->
+    <!-- VIEW 1: HOME SEARCH TRAINS (#home)                                 -->
+    <!-- ================================================================= -->
+    <section id="home" class="view-section">
+      <div class="search-card">
+        <div class="search-title-row">
+          <div>
+            <h1>Book Train Tickets</h1>
+            <p style="color: var(--ink-muted); font-size: var(--fs-small); margin-top: 4px;">
+              Direct Indian Railways booking with confirmed seat predictions and live availability.
+            </p>
+          </div>
+          <span class="hci-tag error">HCI #4: Error Prevention</span>
+        </div>
+
+        <form action="#results" method="get">
+          <div class="grid-search">
+            <!-- Origin Station -->
+            <div class="input-group">
+              <label class="input-label" for="from-stn">From Station</label>
+              <input type="text" id="from-stn" class="text-input" value="Chhatrapati Sambhajinagar (CSN)" required>
+              <div class="quick-chips-row">
+                <span class="quick-chip">Pune (PUNE)</span>
+                <span class="quick-chip">Mumbai (CSMT)</span>
+              </div>
+            </div>
+
+            <!-- Station Swap Button -->
+            <div style="padding-bottom: 24px;">
+              <button type="button" class="swap-btn" title="Swap Origin and Destination Stations" aria-label="Swap Stations">⇄</button>
+            </div>
+
+            <!-- Destination Station -->
+            <div class="input-group">
+              <label class="input-label" for="to-stn">To Station</label>
+              <input type="text" id="to-stn" class="text-input" value="Mumbai CSMT (CSMT)" required>
+              <div class="quick-chips-row">
+                <span class="quick-chip">Nagpur (NGP)</span>
+                <span class="quick-chip">Delhi (NDLS)</span>
+              </div>
+            </div>
+
+            <!-- Travel Date -->
+            <div class="input-group">
+              <label class="input-label" for="travel-date">Journey Date</label>
+              <input type="date" id="travel-date" class="text-input" value="2026-10-09" required>
+              <div class="quick-chips-row">
+                <span class="quick-chip">Today</span>
+                <span class="quick-chip">Tomorrow</span>
+                <span class="quick-chip">+2 Days</span>
+              </div>
+            </div>
+
+            <!-- Travel Class -->
+            <div class="input-group">
+              <label class="input-label" for="travel-class">Class</label>
+              <select id="travel-class" class="select-input">
+                <option value="all">All Classes</option>
+                <option value="3A" selected>AC 3 Tier (3A)</option>
+                <option value="2A">AC 2 Tier (2A)</option>
+                <option value="1A">AC First Class (1A)</option>
+                <option value="CC">AC Chair Car (CC)</option>
+                <option value="SL">Sleeper (SL)</option>
+                <option value="2S">Second Sitting (2S)</option>
+              </select>
+            </div>
+
+            <!-- Quota & Submit -->
+            <div class="input-group">
+              <label class="input-label" for="quota-select">Quota</label>
+              <select id="quota-select" class="select-input" style="margin-bottom: 12px;">
+                <option value="GN" selected>General (GN)</option>
+                <option value="TQ">Tatkal (TQ)</option>
+                <option value="LD">Ladies (LD)</option>
+                <option value="SS">Senior Citizen (SS)</option>
+              </select>
+              <a href="#results" class="btn-primary" style="height: 48px;">
+                <span>Search Trains</span>
+                <span>➔</span>
+              </a>
+            </div>
+          </div>
+        </form>
+
+        <!-- Recognition Rather than Recall: Recent Searches -->
+        <div class="recent-searches">
+          <span><strong>Recent Searches:</strong></span>
+          <a href="#results" class="recent-chip">CSN → CSMT (09 Oct &bull; 3A)</a>
+          <a href="#results" class="recent-chip">PUNE → CSN (12 Oct &bull; CC)</a>
+          <a href="#results" class="recent-chip">CSN → NGP (16 Oct &bull; SL)</a>
+          <span class="hci-tag recognition" style="margin-left: auto;">HCI #5: Recognition Rather than Recall</span>
+        </div>
+      </div>
+
+      <!-- Quick Services Grid (HCI Consistency & Standard Web Patterns) -->
+      <div class="home-shortcuts-grid">
+        <a href="#pnr" class="shortcut-card">
+          <div class="shortcut-icon">🔍</div>
+          <div class="shortcut-info">
+            <h3>PNR Status Inquiry</h3>
+            <p>Get current passenger chart status, coach and berth allocation instantly.</p>
+          </div>
+        </a>
+
+        <a href="#pnr" class="shortcut-card">
+          <div class="shortcut-icon">📍</div>
+          <div class="shortcut-info">
+            <h3>Live Train Running Status</h3>
+            <p>Track real-time GPS location, delay predictions and upcoming platforms.</p>
+          </div>
+        </a>
+
+        <a href="#results" class="shortcut-card">
+          <div class="shortcut-icon">🎟</div>
+          <div class="shortcut-info">
+            <h3>Seat Availability Matrix</h3>
+            <p>Compare confirmation chances across dates and classes in a single click.</p>
+          </div>
+        </a>
+      </div>
+
+      <!-- HCI Design Principles Highlight Banner -->
+      <div class="section-box" style="background: var(--surface); border-left: 4px solid var(--brand);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+          <h2 style="font-size: var(--fs-h3); margin-bottom: 0;">Built for Usability &amp; Indian Railway Commuters</h2>
+          <span class="hci-tag standard">HCI #3: Consistency &amp; Standards</span>
+        </div>
+        <p style="font-size: var(--fs-small); color: var(--ink-muted); line-height: 1.6;">
+          RailSafar complies with Jakob Nielsen's Usability Principles. High-contrast typography (15:1 ratio), intuitive Indian railway signalling colors (Track Blue, Signal Green, Caution Amber, Alert Red), 8-point layout rhythm, and currency standardization in Indian Rupees (₹) ensure clarity for all passengers across desktop and mobile devices.
+        </p>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- VIEW 2: SEARCH RESULTS & AVAILABILITY (#results)                   -->
+    <!-- ================================================================= -->
+    <section id="results" class="view-section">
+      <!-- Route & Filter Context Bar -->
+      <div style="background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-card); padding: var(--s3) var(--s4); margin-bottom: var(--s4); display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <span style="font-size: var(--fs-small); color: var(--ink-muted);">Route Search Results</span>
+          <h2 style="font-size: var(--fs-h2); font-weight: 700; color: var(--ink); margin-top: 2px;">
+            Chhatrapati Sambhajinagar (CSN) ➔ Mumbai CSMT (CSMT)
+          </h2>
+          <span style="font-size: var(--fs-small); color: var(--ink-muted);">
+            Friday, 09 October 2026 &bull; General Quota &bull; <strong>4 Direct Trains Available</strong>
+          </span>
+        </div>
+        <div style="display: flex; gap: var(--s2); align-items: center;">
+          <a href="#home" class="btn-secondary" style="height: 38px; padding: 0 14px; font-size: var(--fs-small);">Modify Search</a>
+          <span class="hci-tag status">HCI #1: Visibility of System Status</span>
+        </div>
+      </div>
+
+      <!-- Train 1: Jan Shatabdi Express -->
+      <article class="result-card">
+        <div class="result-header">
+          <div class="train-title-group">
+            <span class="train-num">12072</span>
+            <span class="train-name">JAN SHATABDI EXPRESS</span>
+            <span class="run-days">&bull; Runs Daily (M T W T F S S)</span>
+          </div>
+          <span class="status-chip success">
+            <span>●</span> On Time Expected
+          </span>
+        </div>
+
+        <!-- Journey Strip Metaphor (HCI Match Between System & Real World) -->
+        <div class="journey-strip">
+          <div class="strip-meta">
+            <div>
+              <div class="strip-time num">06:00</div>
+              <div class="strip-station-main">Chhatrapati Sambhajinagar (CSN)</div>
+              <div style="font-size: var(--fs-caption); color: var(--ink-muted);">Platform 1 &bull; 09 Oct</div>
+            </div>
+            <div class="strip-duration">
+              <span class="num">06h 45m</span>
+              <div style="font-size: var(--fs-caption); color: var(--ink-muted);">374 km &bull; Superfast</div>
+            </div>
+            <div style="text-align: right;">
+              <div class="strip-time num">12:45</div>
+              <div class="strip-station-main">Mumbai CSMT (CSMT)</div>
+              <div style="font-size: var(--fs-caption); color: var(--ink-muted);">Platform 14 &bull; 09 Oct</div>
+            </div>
+          </div>
+
+          <div class="strip-line-container">
+            <div class="strip-line active"></div>
+            <div class="strip-dot origin" title="Origin: CSN"></div>
+            <div class="strip-dot intermediate" style="left: 22%;" title="Jalna"></div>
+            <div class="strip-dot intermediate" style="left: 48%;" title="Manmad Junction"></div>
+            <div class="strip-dot intermediate" style="left: 74%;" title="Kalyan Junction"></div>
+            <div class="strip-dot destination" title="Destination: CSMT"></div>
+          </div>
+
+          <div class="strip-stations">
+            <span>CSN (06:00)</span>
+            <span>Jalna (06:40)</span>
+            <span>Manmad (08:50)</span>
+            <span>Kalyan (11:55)</span>
+            <span>CSMT (12:45)</span>
+          </div>
+        </div>
+
+        <!-- Class Cards Grid with Real-time Status -->
+        <div class="classes-row">
+          <!-- Class CC -->
+          <div class="class-card-chip selected">
+            <div class="class-card-top">
+              <span class="class-code">AC Chair Car (CC)</span>
+              <span class="class-fare num">₹695</span>
+            </div>
+            <div style="margin-top: 6px;">
+              <span class="status-chip success">
+                <span>✓</span> Available: 48 Seats
+              </span>
+            </div>
+            <div style="font-size: var(--fs-caption); color: var(--ink-muted); margin-top: 4px;">
+              High confirmation chance &bull; Updated 2m ago
+            </div>
+          </div>
+
+          <!-- Class 2S -->
+          <div class="class-card-chip">
+            <div class="class-card-top">
+              <span class="class-code">Second Sitting (2S)</span>
+              <span class="class-fare num">₹180</span>
+            </div>
+            <div style="margin-top: 6px;">
+              <span class="status-chip success">
+                <span>✓</span> Available: 142 Seats
+              </span>
+            </div>
+            <div style="font-size: var(--fs-caption); color: var(--ink-muted); margin-top: 4px;">
+              General quota confirmed
+            </div>
+          </div>
+
+          <!-- Class EV -->
+          <div class="class-card-chip">
+            <div class="class-card-top">
+              <span class="class-code">Vistadome (EV)</span>
+              <span class="class-fare num">₹1,450</span>
+            </div>
+            <div style="margin-top: 6px;">
+              <span class="status-chip caution">
+                <span>!</span> RAC 04 (Probable)
+              </span>
+            </div>
+            <div style="font-size: var(--fs-caption); color: var(--ink-muted); margin-top: 4px;">
+              Scenic Western Ghats coach
+            </div>
+          </div>
+
+          <!-- Class 1A -->
+          <div class="class-card-chip">
+            <div class="class-card-top">
+              <span class="class-code">First AC (1A)</span>
+              <span class="class-fare num">₹1,980</span>
+            </div>
+            <div style="margin-top: 6px;">
+              <span class="status-chip danger">
+                <span>✕</span> WL 12 (Waitlist)
+              </span>
+            </div>
+            <div style="font-size: var(--fs-caption); color: var(--ink-muted); margin-top: 4px;">
+              54% confirmation chance
+            </div>
+          </div>
+        </div>
+
+        <div class="result-card-footer">
+          <div style="display: flex; gap: var(--s3); align-items: center; font-size: var(--fs-small); color: var(--ink-muted);">
+            <span>Pantry: Available ☕</span>
+            <span>E-Catering: Yes 🍱</span>
+            <span class="hci-tag realworld">HCI #2: Real-World Rail Metaphor</span>
+          </div>
+          <div>
+            <a href="#passengers" class="btn-primary" style="height: 42px; padding: 0 var(--s5); font-size: var(--fs-small);">
+              Book Now &bull; CC (₹695) ➔
+            </a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Train 2: Devagiri Express -->
+      <article class="result-card">
+        <div class="result-header">
+          <div class="train-title-group">
+            <span class="train-num">17058</span>
+            <span class="train-name">DEVAGIRI EXPRESS</span>
+            <span class="run-days">&bull; Daily Overnight</span>
+          </div>
+          <span class="status-chip success">
+            <span>●</span> On Time
+          </span>
+        </div>
+
+        <div class="journey-strip">
+          <div class="strip-meta">
+            <div>
+              <div class="strip-time num">23:25</div>
+              <div class="strip-station-main">Chhatrapati Sambhajinagar (CSN)</div>
+              <div style="font-size: var(--fs-caption); color: var(--ink-muted);">Platform 2 &bull; 09 Oct</div>
+            </div>
+            <div class="strip-duration">
+              <span class="num">07h 45m</span>
+              <div style="font-size: var(--fs-caption); color: var(--ink-muted);">374 km &bull; Overnight Express</div>
+            </div>
+            <div style="text-align: right;">
+              <div class="strip-time num">07:10</div>
+              <div class="strip-station-main">Mumbai CSMT (CSMT)</div>
+              <div style="font-size: var(--fs-caption); color: var(--ink-muted);">Platform 12 &bull; 10 Oct</div>
+            </div>
+          </div>
+
+          <div class="strip-line-container">
+            <div class="strip-line"></div>
+            <div class="strip-dot origin"></div>
+            <div class="strip-dot intermediate" style="left: 35%;"></div>
+            <div class="strip-dot intermediate" style="left: 65%;"></div>
+            <div class="strip-dot destination"></div>
+          </div>
+
+          <div class="strip-stations">
+            <span>CSN (23:25)</span>
+            <span>Rotegaon (00:20)</span>
+            <span>Igatpuri (04:15)</span>
+            <span>CSMT (07:10)</span>
+          </div>
+        </div>
+
+        <div class="classes-row">
+          <div class="class-card-chip">
+            <div class="class-card-top">
+              <span class="class-code">AC 3 Tier (3A)</span>
+              <span class="class-fare num">₹710</span>
+            </div>
+            <div style="margin-top: 6px;">
+              <span class="status-chip success">✓ Available: 32</span>
+            </div>
+          </div>
+          <div class="class-card-chip">
+            <div class="class-card-top">
+              <span class="class-code">AC 2 Tier (2A)</span>
+              <span class="class-fare num">₹1,020</span>
+            </div>
+            <div style="margin-top: 6px;">
+              <span class="status-chip success">✓ Available: 14</span>
+            </div>
+          </div>
+          <div class="class-card-chip">
+            <div class="class-card-top">
+              <span class="class-code">Sleeper (SL)</span>
+              <span class="class-fare num">₹265</span>
+            </div>
+            <div style="margin-top: 6px;">
+              <span class="status-chip caution">! RAC 12</span>
+            </div>
+          </div>
+          <div class="class-card-chip">
+            <div class="class-card-top">
+              <span class="class-code">First AC (1A)</span>
+              <span class="class-fare num">₹1,710</span>
+            </div>
+            <div style="margin-top: 6px;">
+              <span class="status-chip success">✓ Available: 04</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="result-card-footer">
+          <span style="font-size: var(--fs-small); color: var(--ink-muted);">Sleeping accommodation available. Bedroll included in AC.</span>
+          <a href="#passengers" class="btn-primary" style="height: 42px; padding: 0 var(--s5); font-size: var(--fs-small);">
+            Book 3A (₹710) ➔
+          </a>
+        </div>
+      </article>
+
+      <!-- Train 3: Nandigram Express -->
+      <article class="result-card">
+        <div class="result-header">
+          <div class="train-title-group">
+            <span class="train-num">11402</span>
+            <span class="train-name">NANDIGRAM EXPRESS</span>
+            <span class="run-days">&bull; Daily</span>
+          </div>
+          <span class="status-chip success">
+            <span>●</span> On Time
+          </span>
+        </div>
+
+        <div class="classes-row">
+          <div class="class-card-chip">
+            <div class="class-card-top">
+              <span class="class-code">AC 3 Tier (3A)</span>
+              <span class="class-fare num">₹695</span>
+            </div>
+            <div style="margin-top: 6px;"><span class="status-chip success">✓ Available: 22</span></div>
+          </div>
+          <div class="class-card-chip">
+            <div class="class-card-top">
+              <span class="class-code">Sleeper (SL)</span>
+              <span class="class-fare num">₹255</span>
+            </div>
+            <div style="margin-top: 6px;"><span class="status-chip success">✓ Available: 64</span></div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- VIEW 3: PASSENGER & BERTH PICKER (#passengers)                     -->
+    <!-- ================================================================= -->
+    <section id="passengers" class="view-section">
+      <!-- 4-Step Booking Progress Indicator -->
+      <nav class="booking-stepper" aria-label="Booking Progress">
+        <div class="step-item done">
+          <div class="step-circle">✓</div>
+          <span>1. Train Selected</span>
+        </div>
+        <div class="step-divider"></div>
+        <div class="step-item active">
+          <div class="step-circle">2</div>
+          <span>2. Passenger &amp; Berth</span>
+        </div>
+        <div class="step-divider"></div>
+        <div class="step-item">
+          <div class="step-circle">3</div>
+          <span>3. Review &amp; Pay</span>
+        </div>
+        <div class="step-divider"></div>
+        <div class="step-item">
+          <div class="step-circle">4</div>
+          <span>4. Confirmation</span>
+        </div>
+      </nav>
+
+      <div class="two-col-layout">
+        <!-- Left: Passenger Inputs & Berth Map -->
+        <div>
+          <!-- Saved Passengers (HCI Recognition over Recall) -->
+          <div class="section-box">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--s3);">
+              <h2>Passenger Information</h2>
+              <span class="hci-tag recognition">HCI #5: Recognition Rather than Recall</span>
+            </div>
+
+            <p style="font-size: var(--fs-small); color: var(--ink-muted); margin-bottom: var(--s3);">
+              Select from saved passenger list for instant 1-click form autofill:
+            </p>
+
+            <div class="saved-passengers-list">
+              <div class="saved-p-card selected">
+                <span>✓</span>
+                <span>Pranav Khaire (21, M)</span>
+              </div>
+              <div class="saved-p-card">
+                <span>+</span>
+                <span>Samadhan Khaire (52, M)</span>
+              </div>
+              <div class="saved-p-card">
+                <span>+</span>
+                <span>Sunita Khaire (48, F)</span>
+              </div>
+            </div>
+
+            <!-- Detailed Passenger Fields -->
+            <div style="background: var(--surface-sunken); padding: var(--s4); border-radius: var(--r-input); border: 1px solid var(--line);">
+              <span style="font-size: var(--fs-small); font-weight: 700; color: var(--ink);">Passenger 1 (Primary)</span>
+              
+              <div class="passenger-input-grid">
+                <div class="input-group">
+                  <label class="input-label" for="p-name">Full Name (as per Govt ID)</label>
+                  <input type="text" id="p-name" class="text-input" value="Pranav Samadhan Khaire" required>
+                </div>
+
+                <div class="input-group">
+                  <label class="input-label" for="p-age">Age</label>
+                  <input type="number" id="p-age" class="text-input num" value="21" min="5" max="120" required>
+                </div>
+
+                <div class="input-group">
+                  <label class="input-label" for="p-gender">Gender</label>
+                  <select id="p-gender" class="select-input">
+                    <option value="male" selected>Male</option>
+                    <option value="female">Female</option>
+                    <option value="trans">Transgender</option>
+                  </select>
+                </div>
+
+                <div class="input-group">
+                  <label class="input-label" for="p-berth">Berth Choice</label>
+                  <select id="p-berth" class="select-input">
+                    <option value="LB" selected>Lower Berth (LB)</option>
+                    <option value="MB">Middle Berth (MB)</option>
+                    <option value="UB">Upper Berth (UB)</option>
+                    <option value="SL">Side Lower (SL)</option>
+                    <option value="SU">Side Upper (SU)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top: var(--s3); display: flex; gap: var(--s3); align-items: center;">
+              <button type="button" class="btn-secondary" style="height: 38px; font-size: var(--fs-small); padding: 0 16px;">
+                + Add Another Passenger
+              </button>
+              <span style="font-size: var(--fs-caption); color: var(--ink-muted);">Maximum 6 passengers per ticket in General Quota</span>
+            </div>
+          </div>
+
+          <!-- Coach Berth Grid (HCI Match Between System & Real World) -->
+          <div class="section-box">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--s2);">
+              <h2>Interactive Coach Berth Map</h2>
+              <span class="hci-tag realworld">HCI #2: Match with Real World</span>
+            </div>
+            <p style="font-size: var(--fs-small); color: var(--ink-muted); margin-bottom: var(--s3);">
+              Select your preferred seat in Coach <strong>B3 (AC 3-Tier)</strong>. Real-world spatial representation of train compartments.
+            </p>
+
+            <div class="coach-grid-container">
+              <div class="coach-header">
+                <div>
+                  <span style="font-weight: 700; color: var(--ink);">Coach B3</span>
+                  <span style="font-size: var(--fs-small); color: var(--ink-muted); margin-left: 8px;">Train: 12072 JAN SHATABDI EXP</span>
+                </div>
+                <span class="status-chip success">Selected Berth: B3-24 (Lower)</span>
+              </div>
+
+              <!-- Coach Compartment Bays -->
+              <div class="coach-bays">
+                <!-- Bay 1 -->
+                <div class="coach-bay">
+                  <div class="bay-title">Bay 1 (1 - 8)</div>
+                  <div class="seat-row">
+                    <div class="seat-node booked" title="Berth 1 (LB) - Booked">1</div>
+                    <div class="seat-node booked" title="Berth 2 (MB) - Booked">2</div>
+                    <div class="seat-node" title="Berth 3 (UB) - Available">3</div>
+                  </div>
+                  <div class="seat-row">
+                    <div class="seat-node booked" title="Berth 4 (LB) - Booked">4</div>
+                    <div class="seat-node booked" title="Berth 5 (MB) - Booked">5</div>
+                    <div class="seat-node" title="Berth 6 (UB) - Available">6</div>
+                  </div>
+                  <div class="seat-row" style="margin-top: 10px; border-top: 1px dashed var(--line); padding-top: 6px;">
+                    <div class="seat-node" title="Berth 7 (SL) - Available">7</div>
+                    <div class="seat-node" title="Berth 8 (SU) - Available">8</div>
+                  </div>
+                </div>
+
+                <!-- Bay 2 -->
+                <div class="coach-bay">
+                  <div class="bay-title">Bay 2 (9 - 16)</div>
+                  <div class="seat-row">
+                    <div class="seat-node booked">9</div>
+                    <div class="seat-node">10</div>
+                    <div class="seat-node">11</div>
+                  </div>
+                  <div class="seat-row">
+                    <div class="seat-node booked">12</div>
+                    <div class="seat-node">13</div>
+                    <div class="seat-node">14</div>
+                  </div>
+                  <div class="seat-row" style="margin-top: 10px; border-top: 1px dashed var(--line); padding-top: 6px;">
+                    <div class="seat-node booked">15</div>
+                    <div class="seat-node">16</div>
+                  </div>
+                </div>
+
+                <!-- Bay 3 (Selected Seat Here) -->
+                <div class="coach-bay" style="border: 2px solid var(--brand);">
+                  <div class="bay-title" style="color: var(--brand);">Bay 3 (17 - 24) ★</div>
+                  <div class="seat-row">
+                    <div class="seat-node">17</div>
+                    <div class="seat-node">18</div>
+                    <div class="seat-node">19</div>
+                  </div>
+                  <div class="seat-row">
+                    <div class="seat-node booked">20</div>
+                    <div class="seat-node booked">21</div>
+                    <div class="seat-node">22</div>
+                  </div>
+                  <div class="seat-row" style="margin-top: 10px; border-top: 1px dashed var(--line); padding-top: 6px;">
+                    <div class="seat-node">23</div>
+                    <div class="seat-node selected" title="Berth 24 (Lower Berth) - Selected by You">24</div>
+                  </div>
+                </div>
+
+                <!-- Bay 4 -->
+                <div class="coach-bay">
+                  <div class="bay-title">Bay 4 (25 - 32)</div>
+                  <div class="seat-row">
+                    <div class="seat-node">25</div>
+                    <div class="seat-node">26</div>
+                    <div class="seat-node">27</div>
+                  </div>
+                  <div class="seat-row">
+                    <div class="seat-node booked">28</div>
+                    <div class="seat-node">29</div>
+                    <div class="seat-node">30</div>
+                  </div>
+                  <div class="seat-row" style="margin-top: 10px; border-top: 1px dashed var(--line); padding-top: 6px;">
+                    <div class="seat-node booked">31</div>
+                    <div class="seat-node">32</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Seat Map Legend -->
+              <div class="seat-legend">
+                <div class="legend-item">
+                  <div class="seat-node" style="width: 20px; height: 20px; cursor: default;"></div>
+                  <span>Available</span>
+                </div>
+                <div class="legend-item">
+                  <div class="seat-node selected" style="width: 20px; height: 20px; cursor: default;"></div>
+                  <span>Your Selection</span>
+                </div>
+                <div class="legend-item">
+                  <div class="seat-node booked" style="width: 20px; height: 20px; cursor: default;"></div>
+                  <span>Booked</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Sticky Fare Summary Sidebar -->
+        <aside class="sticky-fare-summary">
+          <div class="fare-timer-bar">
+            <span>⏱</span>
+            <span>Seat held for <strong>09:54 min</strong></span>
+          </div>
+
+          <h3 style="font-size: var(--fs-h3); margin-bottom: var(--s3); color: var(--ink);">Fare Summary</h3>
+
+          <div style="font-size: var(--fs-small); color: var(--ink-muted); margin-bottom: var(--s3); padding-bottom: var(--s2); border-bottom: 1px solid var(--line);">
+            <div><strong>12072 JAN SHATABDI EXP</strong></div>
+            <div>CSN ➔ CSMT &bull; 09 Oct 2026</div>
+            <div>1 Adult &bull; AC Chair Car (CC)</div>
+          </div>
+
+          <div class="fare-row">
+            <span>Base Fare (1 Adult)</span>
+            <span class="num">₹695.00</span>
+          </div>
+
+          <div class="fare-row">
+            <span>Superfast Surcharge</span>
+            <span class="num">₹45.00</span>
+          </div>
+
+          <div class="fare-row">
+            <span>Reservation Fee</span>
+            <span class="num">₹40.00</span>
+          </div>
+
+          <div class="fare-row">
+            <span>Goods &amp; Service Tax (GST 5%)</span>
+            <span class="num">₹39.00</span>
+          </div>
+
+          <div class="fare-row">
+            <span>Travel Insurance (₹0.45/pax)</span>
+            <span class="num">₹0.45</span>
+          </div>
+
+          <div class="fare-row total">
+            <span>Total Payable</span>
+            <span class="num" style="color: var(--brand);">₹819.45</span>
+          </div>
+
+          <div style="margin-top: var(--s4);">
+            <a href="#payment" class="btn-primary">
+              <span>Proceed to Payment</span>
+              <span>➔</span>
+            </a>
+          </div>
+
+          <div style="margin-top: var(--s3); font-size: var(--fs-caption); color: var(--ink-muted); text-align: center;">
+            🔒 256-bit Encrypted IRCTC Verified Gateway
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- VIEW 4: REVIEW & PAYMENT (#payment)                                -->
+    <!-- ================================================================= -->
+    <section id="payment" class="view-section">
+      <!-- 4-Step Booking Progress Indicator -->
+      <nav class="booking-stepper" aria-label="Booking Progress">
+        <div class="step-item done">
+          <div class="step-circle">✓</div>
+          <span>1. Train Selected</span>
+        </div>
+        <div class="step-divider"></div>
+        <div class="step-item done">
+          <div class="step-circle">✓</div>
+          <span>2. Passenger &amp; Berth</span>
+        </div>
+        <div class="step-divider"></div>
+        <div class="step-item active">
+          <div class="step-circle">3</div>
+          <span>3. Review &amp; Pay</span>
+        </div>
+        <div class="step-divider"></div>
+        <div class="step-item">
+          <div class="step-circle">4</div>
+          <span>4. Confirmation</span>
+        </div>
+      </nav>
+
+      <div class="two-col-layout">
+        <div>
+          <!-- Booking Review Box -->
+          <div class="section-box">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--s3);">
+              <h2>Review Journey Details Before Payment</h2>
+              <span class="hci-tag error">HCI #4: Error Prevention</span>
+            </div>
+
+            <!-- Active Hold Alert -->
+            <div style="background: var(--warn-bg); border: 1px solid var(--warn); border-radius: var(--r-input); padding: var(--s3); display: flex; gap: var(--s3); align-items: center; margin-bottom: var(--s4);">
+              <span style="font-size: 1.4rem;">⚠️</span>
+              <div>
+                <strong style="color: var(--warn);">Seat Reserved for 08:32 minutes:</strong>
+                <p style="font-size: var(--fs-small); color: var(--ink); margin-top: 2px;">
+                  Seat <strong>B3-24 (Lower)</strong> is held exclusively for you. If payment is not completed within the countdown, the seat will be automatically released back to the general quota.
+                </p>
+              </div>
+            </div>
+
+            <!-- Train Summary Strip -->
+            <div style="background: var(--surface-sunken); border-radius: var(--r-input); padding: var(--s4); margin-bottom: var(--s4); border: 1px solid var(--line);">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--s2);">
+                <div>
+                  <span class="train-num">12072</span>
+                  <strong style="margin-left: 6px; font-size: var(--fs-h3);">JAN SHATABDI EXP</strong>
+                </div>
+                <span class="status-chip success">Quota: General (GN)</span>
+              </div>
+
+              <div style="display: flex; justify-content: space-between; align-items: center; font-size: var(--fs-small); margin-top: var(--s2);">
+                <div>
+                  <div><strong>CSN &bull; Chhatrapati Sambhajinagar</strong></div>
+                  <div style="color: var(--ink-muted);">Dep: 06:00 AM, Fri 09 Oct 2026 (PF 1)</div>
+                </div>
+                <div style="text-align: center; color: var(--ink-muted);">➔ 06h 45m ➔</div>
+                <div style="text-align: right;">
+                  <div><strong>CSMT &bull; Mumbai CSMT</strong></div>
+                  <div style="color: var(--ink-muted);">Arr: 12:45 PM, Fri 09 Oct 2026 (PF 14)</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Verified Passenger Details -->
+            <div>
+              <h3 style="font-size: var(--fs-h3); margin-bottom: var(--s2); color: var(--ink);">Passenger Details</h3>
+              <div style="display: flex; justify-content: space-between; padding: var(--s3); border: 1px solid var(--line); border-radius: var(--r-input); background: var(--surface);">
+                <div>
+                  <div><strong>1. Pranav Samadhan Khaire</strong></div>
+                  <div style="font-size: var(--fs-small); color: var(--ink-muted); margin-top: 2px;">Age: 21 | Male | Food: Veg Meal</div>
+                </div>
+                <div style="text-align: right;">
+                  <span class="status-chip success">Allocated: Coach B3 / Seat 24 (Lower)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Payment Options (HCI Consistency & Standard Indian Payment Rails) -->
+          <div class="section-box">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--s3);">
+              <h2>Select Payment Method</h2>
+              <span class="hci-tag standard">HCI #3: Consistency &amp; Standards</span>
+            </div>
+
+            <!-- Payment Method Radio Cards -->
+            <div style="display: flex; flex-direction: column; gap: var(--s3);">
+              <!-- UPI Option -->
+              <label style="display: flex; align-items: center; gap: var(--s3); padding: var(--s3) var(--s4); border: 2px solid var(--brand); border-radius: var(--r-input); background: var(--brand-tint); cursor: pointer;">
+                <input type="radio" name="pay-method" checked style="accent-color: var(--brand); width: 18px; height: 18px;">
+                <div style="flex-grow: 1;">
+                  <strong style="color: var(--brand);">UPI (Instant 0% Convenience Fee)</strong>
+                  <div style="font-size: var(--fs-small); color: var(--ink-muted);">Google Pay, PhonePe, Paytm, BHIM, Any UPI ID</div>
+                </div>
+                <span style="font-weight: 700; color: var(--ok); font-size: var(--fs-small);">Fastest ⚡</span>
+              </label>
+
+              <!-- Debit / Credit Card -->
+              <label style="display: flex; align-items: center; gap: var(--s3); padding: var(--s3) var(--s4); border: 1px solid var(--line); border-radius: var(--r-input); background: var(--surface); cursor: pointer;">
+                <input type="radio" name="pay-method" style="accent-color: var(--brand); width: 18px; height: 18px;">
+                <div style="flex-grow: 1;">
+                  <strong>Debit / Credit Cards (RuPay, Visa, Mastercard)</strong>
+                  <div style="font-size: var(--fs-small); color: var(--ink-muted);">All Indian &amp; International banks accepted</div>
+                </div>
+              </label>
+
+              <!-- Internet Banking -->
+              <label style="display: flex; align-items: center; gap: var(--s3); padding: var(--s3) var(--s4); border: 1px solid var(--line); border-radius: var(--r-input); background: var(--surface); cursor: pointer;">
+                <input type="radio" name="pay-method" style="accent-color: var(--brand); width: 18px; height: 18px;">
+                <div style="flex-grow: 1;">
+                  <strong>Internet Banking</strong>
+                  <div style="font-size: var(--fs-small); color: var(--ink-muted);">SBI, HDFC, ICICI, Bank of Maharashtra, Axis</div>
+                </div>
+              </label>
+            </div>
+
+            <!-- UPI Input Box -->
+            <div style="margin-top: var(--s4); padding: var(--s3); background: var(--surface-sunken); border-radius: var(--r-input); border: 1px solid var(--line);">
+              <label class="input-label" for="upi-id">Enter Virtual Payment Address (VPA / UPI ID)</label>
+              <div style="display: flex; gap: var(--s2); margin-top: 6px;">
+                <input type="text" id="upi-id" class="text-input" value="pranav16@okhdfcbank" style="flex-grow: 1;">
+                <button type="button" class="btn-secondary" style="height: 48px; padding: 0 16px;">Verify VPA</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Side: Pay Action Card -->
+        <aside class="sticky-fare-summary">
+          <div class="fare-timer-bar">
+            <span>⏱</span>
+            <span>Expires in: <strong>08:32</strong></span>
+          </div>
+
+          <h3 style="font-size: var(--fs-h3); margin-bottom: var(--s3); color: var(--ink);">Payment Breakdown</h3>
+
+          <div class="fare-row">
+            <span>Ticket Fare</span>
+            <span class="num">₹780.00</span>
+          </div>
+          <div class="fare-row">
+            <span>GST (5%)</span>
+            <span class="num">₹39.00</span>
+          </div>
+          <div class="fare-row">
+            <span>Convenience Fee (UPI)</span>
+            <span class="num">₹0.00</span>
+          </div>
+          <div class="fare-row">
+            <span>Travel Insurance</span>
+            <span class="num">₹0.45</span>
+          </div>
+
+          <div class="fare-row total">
+            <span>Final Amount</span>
+            <span class="num" style="color: var(--brand); font-size: 1.4rem;">₹819.45</span>
+          </div>
+
+          <div style="margin-top: var(--s4);">
+            <a href="#ticket" class="btn-primary" style="font-size: 1.05rem;">
+              <span>Pay ₹819.45 &amp; Book Ticket</span>
+              <span>🔒</span>
+            </a>
+          </div>
+
+          <div style="margin-top: var(--s3); text-align: center;">
+            <a href="#passengers" style="font-size: var(--fs-small); color: var(--ink-muted);">← Back to Passenger Details</a>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- VIEW 5: CONFIRMED TICKET (#ticket)                                 -->
+    <!-- ================================================================= -->
+    <section id="ticket" class="view-section">
+      <div class="ticket-wrapper">
+        <!-- Success Alert (HCI Visibility of System Status) -->
+        <div class="confirmation-banner">
+          <div class="confirmation-icon">✓</div>
+          <div>
+            <h2 style="font-size: var(--fs-h2); color: var(--ok); margin-bottom: 2px;">Booking Confirmed! Happy Journey.</h2>
+            <p style="font-size: var(--fs-small); color: var(--ink-muted);">
+              Confirmation SMS &amp; WhatsApp ticket sent to +91 98765 43210. Email sent to pranavkhaire53@gmail.com.
+            </p>
+          </div>
+          <span class="hci-tag status" style="margin-left: auto;">HCI #1: Visibility of System Status</span>
+        </div>
+
+        <!-- Electronic Reservation Slip (Ticket Card) -->
+        <article class="ticket-card">
+          <!-- Ticket Watermark / Header -->
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--line); padding-bottom: var(--s3); margin-bottom: var(--s3);">
+            <div>
+              <span style="font-size: var(--fs-caption); font-weight: 700; color: var(--ink-muted); text-transform: uppercase;">Indian Railways &bull; IRCTC E-Ticket</span>
+              <div style="font-size: var(--fs-h3); font-weight: 700; color: var(--brand);">ELECTRONIC RESERVATION SLIP (ERS)</div>
+            </div>
+            <div style="text-align: right;">
+              <span class="status-chip success">CONFIRMED (CNF)</span>
+            </div>
+          </div>
+
+          <!-- PNR Banner (Key Identifier) -->
+          <div class="ticket-pnr-banner">
+            <div>
+              <div class="pnr-label">PNR NUMBER</div>
+              <div class="pnr-value num">241-805-7712</div>
+            </div>
+            <div style="text-align: right;">
+              <div class="pnr-label">TRAIN NO. &amp; NAME</div>
+              <div style="font-weight: 700; color: var(--ink); font-size: var(--fs-h3);">12072 / JAN SHATABDI EXP</div>
+            </div>
+          </div>
+
+          <!-- Journey Strip for Confirmed Ticket -->
+          <div class="journey-strip" style="background: var(--surface-sunken); padding: var(--s3); border-radius: var(--r-input); margin-bottom: var(--s4);">
+            <div class="strip-meta">
+              <div>
+                <div class="strip-time num">06:00 AM</div>
+                <div class="strip-station-main">Chhatrapati Sambhajinagar (CSN)</div>
+                <div style="font-size: var(--fs-caption); color: var(--ink-muted);">Platform 1 &bull; 09 Oct 2026</div>
+              </div>
+              <div class="strip-duration">
+                <span class="num">06h 45m</span>
+                <div style="font-size: var(--fs-caption); color: var(--ink-muted);">Direct Superfast</div>
+              </div>
+              <div style="text-align: right;">
+                <div class="strip-time num">12:45 PM</div>
+                <div class="strip-station-main">Mumbai CSMT (CSMT)</div>
+                <div style="font-size: var(--fs-caption); color: var(--ink-muted);">Platform 14 &bull; 09 Oct 2026</div>
+              </div>
+            </div>
+
+            <div class="strip-line-container">
+              <div class="strip-line active"></div>
+              <div class="strip-dot origin"></div>
+              <div class="strip-dot destination"></div>
+            </div>
+          </div>
+
+          <!-- Passenger Accommodation Table -->
+          <table style="width: 100%; border-collapse: collapse; margin-bottom: var(--s4); font-size: var(--fs-small);">
+            <thead>
+              <tr style="background: var(--surface-sunken); text-align: left; border-bottom: 2px solid var(--line);">
+                <th style="padding: 8px 10px;">#</th>
+                <th style="padding: 8px 10px;">Passenger Name</th>
+                <th style="padding: 8px 10px;">Age / Sex</th>
+                <th style="padding: 8px 10px;">Booking Status</th>
+                <th style="padding: 8px 10px;">Current Status</th>
+                <th style="padding: 8px 10px;">Coach / Berth</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid var(--line);">
+                <td style="padding: 10px;">1</td>
+                <td style="padding: 10px;"><strong>Pranav Samadhan Khaire</strong></td>
+                <td style="padding: 10px;">21 / Male</td>
+                <td style="padding: 10px;"><span class="status-chip success">CNF</span></td>
+                <td style="padding: 10px;"><strong style="color: var(--ok);">CONFIRMED</strong></td>
+                <td style="padding: 10px;"><strong>B3 / 24 (Lower)</strong></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- Fare & Transaction Details -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--s4); padding-top: var(--s3); border-top: 1px dashed var(--line); font-size: var(--fs-small);">
+            <div>
+              <div style="color: var(--ink-muted);">Payment Mode: <strong>UPI (Auto-Pay)</strong></div>
+              <div style="color: var(--ink-muted);">Transaction ID: <span class="num">TXN-9081237465</span></div>
+              <div style="color: var(--ink-muted);">Booked On: 08 Oct 2026, 14:28 IST</div>
+            </div>
+            <div style="text-align: right;">
+              <div style="color: var(--ink-muted);">Total Amount Paid:</div>
+              <div class="num" style="font-size: var(--fs-h2); font-weight: 700; color: var(--brand);">₹819.45</div>
+              <div style="font-size: var(--fs-caption); color: var(--ok);">Zero cancellation charges within 4 hours</div>
+            </div>
+          </div>
+
+          <!-- Bottom Action Buttons -->
+          <div class="ticket-actions-row">
+            <button type="button" class="btn-primary" style="flex: 1;" onclick="window.print()">
+              <span>📄 Download / Print PDF</span>
+            </button>
+            <a href="#pnr" class="btn-secondary" style="flex: 1;">
+              <span>📍 Track Live Train</span>
+            </a>
+          </div>
+        </article>
+
+        <!-- Recognition Rather than Recall: Return Ticket Quick Action -->
+        <div style="margin-top: var(--s4); text-align: center;">
+          <a href="#home" style="font-size: var(--fs-small); color: var(--brand); font-weight: 600;">
+            + Book Return Journey: Mumbai CSMT ➔ Chhatrapati Sambhajinagar
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- VIEW 6: LIVE TRAIN TRACKING & PNR STATUS (#pnr)                   -->
+    <!-- ================================================================= -->
+    <section id="pnr" class="view-section">
+      <!-- Search Input for Live Train / PNR -->
+      <div class="search-card" style="margin-bottom: var(--s4);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--s3);">
+          <h2>PNR Status &amp; Live Train Tracking</h2>
+          <span class="hci-tag status">HCI #1: Visibility of System Status</span>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: var(--s3); align-items: center;">
+          <div class="input-group">
+            <label class="input-label" for="pnr-track">Enter 10-Digit PNR Number or Train Number</label>
+            <input type="text" id="pnr-track" class="text-input num" value="241-805-7712 (12072 JAN SHATABDI)">
+          </div>
+          <div style="padding-top: 24px;">
+            <button type="button" class="btn-primary" style="height: 48px;">
+              <span>Track Live Status</span>
+              <span>🔍</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Tracking Visualization -->
+      <div class="live-tracker-card">
+        <!-- Live Status Header -->
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: var(--s3); border-bottom: 1px solid var(--line); margin-bottom: var(--s4);">
+          <div>
+            <div style="display: flex; align-items: center; gap: var(--s2);">
+              <span class="train-num">12072</span>
+              <h2 style="font-size: var(--fs-h2); color: var(--ink); margin-bottom: 0;">JAN SHATABDI EXPRESS</h2>
+              <span class="status-chip success">● Running On Time</span>
+            </div>
+            <div style="font-size: var(--fs-small); color: var(--ink-muted); margin-top: 4px;">
+              Current Location: Approaching <strong>Manmad Junction (MMR)</strong> &bull; Updated 30s ago via GPS
+            </div>
+          </div>
+
+          <div style="text-align: right;">
+            <div style="font-size: var(--fs-caption); color: var(--ink-muted);">Next Station:</div>
+            <div style="font-size: var(--fs-h3); font-weight: 700; color: var(--brand);">Manmad Jn (PF 3)</div>
+            <div style="font-size: var(--fs-small); color: var(--ok); font-weight: 600;">Expected in 14 mins (08:50 AM)</div>
+          </div>
+        </div>
+
+        <!-- Spatial Train Timeline (Real-World System Match) -->
+        <div style="position: relative; padding: var(--s4) 0; margin-bottom: var(--s4);">
+          <div style="display: grid; grid-template-columns: repeat(5, 1fr); position: relative; z-index: 2;">
+            
+            <!-- Stop 1: Departed -->
+            <div style="text-align: center;">
+              <div style="width: 24px; height: 24px; border-radius: 50%; background: var(--ok); color: white; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-size: 0.75rem;">✓</div>
+              <div style="font-weight: 700; margin-top: 8px; font-size: var(--fs-small);">CSN (Orig)</div>
+              <div style="font-size: var(--fs-caption); color: var(--ink-muted);">06:00 AM (PF 1)</div>
+              <div style="font-size: var(--fs-caption); color: var(--ok);">Departed On Time</div>
+            </div>
+
+            <!-- Stop 2: Departed -->
+            <div style="text-align: center;">
+              <div style="width: 24px; height: 24px; border-radius: 50%; background: var(--ok); color: white; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-size: 0.75rem;">✓</div>
+              <div style="font-weight: 700; margin-top: 8px; font-size: var(--fs-small);">Jalna (J)</div>
+              <div style="font-size: var(--fs-caption); color: var(--ink-muted);">06:40 AM (PF 2)</div>
+              <div style="font-size: var(--fs-caption); color: var(--ok);">Departed On Time</div>
+            </div>
+
+            <!-- Stop 3: Current Approaching -->
+            <div style="text-align: center;">
+              <div style="width: 28px; height: 28px; border-radius: 50%; background: var(--brand); color: white; display: flex; align-items: center; justify-content: center; margin: -2px auto 0 auto; font-size: 1rem; box-shadow: 0 0 0 4px var(--brand-tint);">🚆</div>
+              <div style="font-weight: 700; margin-top: 6px; font-size: var(--fs-small); color: var(--brand);">Manmad (MMR)</div>
+              <div style="font-size: var(--fs-caption); color: var(--ink-muted);">08:50 AM (PF 3)</div>
+              <div style="font-size: var(--fs-caption); color: var(--brand); font-weight: 700;">Arriving Next</div>
+            </div>
+
+            <!-- Stop 4: Upcoming -->
+            <div style="text-align: center;">
+              <div style="width: 20px; height: 20px; border-radius: 50%; background: var(--surface); border: 2px solid var(--line); margin: 2px auto 0 auto;"></div>
+              <div style="font-weight: 700; margin-top: 8px; font-size: var(--fs-small); color: var(--ink-muted);">Kalyan (KYN)</div>
+              <div style="font-size: var(--fs-caption); color: var(--ink-muted);">11:55 AM (PF 5)</div>
+              <div style="font-size: var(--fs-caption); color: var(--ink-muted);">Expected On Time</div>
+            </div>
+
+            <!-- Stop 5: Destination -->
+            <div style="text-align: center;">
+              <div style="width: 20px; height: 20px; border-radius: 50%; background: var(--surface); border: 2px solid var(--line); margin: 2px auto 0 auto;"></div>
+              <div style="font-weight: 700; margin-top: 8px; font-size: var(--fs-small); color: var(--ink-muted);">CSMT (Dest)</div>
+              <div style="font-size: var(--fs-caption); color: var(--ink-muted);">12:45 PM (PF 14)</div>
+              <div style="font-size: var(--fs-caption); color: var(--ink-muted);">Destination</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Coach Position Layout -->
+        <div style="background: var(--surface-sunken); padding: var(--s4); border-radius: var(--r-input); border: 1px solid var(--line);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--s2);">
+            <strong style="font-size: var(--fs-small);">Coach Composition from Engine (CSN ➔ CSMT):</strong>
+            <span class="status-chip success">Your Coach: B3 (Position 8 from Engine)</span>
+          </div>
+          
+          <div style="display: flex; gap: 6px; overflow-x: auto; padding: 4px 0;">
+            <span style="padding: 6px 10px; background: #334155; color: white; border-radius: 4px; font-size: 0.75rem; font-weight: 700;">LOCO</span>
+            <span style="padding: 6px 10px; background: var(--surface); border: 1px solid var(--line); border-radius: 4px; font-size: 0.75rem;">GEN</span>
+            <span style="padding: 6px 10px; background: var(--surface); border: 1px solid var(--line); border-radius: 4px; font-size: 0.75rem;">D1</span>
+            <span style="padding: 6px 10px; background: var(--surface); border: 1px solid var(--line); border-radius: 4px; font-size: 0.75rem;">D2</span>
+            <span style="padding: 6px 10px; background: var(--surface); border: 1px solid var(--line); border-radius: 4px; font-size: 0.75rem;">C1</span>
+            <span style="padding: 6px 10px; background: var(--surface); border: 1px solid var(--line); border-radius: 4px; font-size: 0.75rem;">C2</span>
+            <span style="padding: 6px 10px; background: var(--surface); border: 1px solid var(--line); border-radius: 4px; font-size: 0.75rem;">B1</span>
+            <span style="padding: 6px 10px; background: var(--surface); border: 1px solid var(--line); border-radius: 4px; font-size: 0.75rem;">B2</span>
+            <span style="padding: 6px 12px; background: var(--brand); color: white; border-radius: 4px; font-size: 0.75rem; font-weight: 700;">★ B3 (You)</span>
+            <span style="padding: 6px 10px; background: var(--surface); border: 1px solid var(--line); border-radius: 4px; font-size: 0.75rem;">B4</span>
+            <span style="padding: 6px 10px; background: var(--surface); border: 1px solid var(--line); border-radius: 4px; font-size: 0.75rem;">EV</span>
+            <span style="padding: 6px 10px; background: var(--surface); border: 1px solid var(--line); border-radius: 4px; font-size: 0.75rem;">SLR</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Application Global Footer -->
+  <footer style="background: #0E1726; color: #94A3B8; padding: var(--s6) var(--s4); margin-top: var(--s8); border-top: 1px solid #1E293B;">
+    <div style="max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr; gap: var(--s6);">
+      <div>
+        <div style="display: flex; align-items: center; gap: 8px; color: #FFFFFF; font-size: var(--fs-h3); font-weight: 700; margin-bottom: var(--s2);">
+          <span>🚆</span>
+          <span>RailSafar</span>
+        </div>
+        <p style="font-size: var(--fs-small); line-height: 1.6; color: #64748B;">
+          Online Railway Information and Booking Application designed strictly under Human-Computer Interaction (HCI) usability engineering principles and Nielsen's 10 Heuristics. Developed with pure semantic HTML5 and modern CSS3.
+        </p>
+      </div>
+      <div>
+        <h4 style="color: #FFFFFF; font-size: var(--fs-small); margin-bottom: var(--s3); text-transform: uppercase; letter-spacing: 0.5px;">Evaluated Usability Heuristics</h4>
+        <ul style="list-style: none; font-size: var(--fs-small); line-height: 2;">
+          <li>&bull; Visibility of System Status</li>
+          <li>&bull; Match with Real World</li>
+          <li>&bull; Consistency &amp; Standards</li>
+          <li>&bull; Error Prevention</li>
+          <li>&bull; Recognition over Recall</li>
+        </ul>
+      </div>
+      <div>
+        <h4 style="color: #FFFFFF; font-size: var(--fs-small); margin-bottom: var(--s3); text-transform: uppercase; letter-spacing: 0.5px;">Student Submission Details</h4>
+        <div style="font-size: var(--fs-small); line-height: 1.8; color: #94A3B8;">
+          <div><strong>Student:</strong> Pranav Samadhan Khaire</div>
+          <div><strong>Roll No:</strong> 49 (TY-C)</div>
+          <div><strong>Branch:</strong> Computer Science and Design</div>
+          <div><strong>Subject:</strong> Human-Computer Interaction (HCI)</div>
+          <div><strong>Institute:</strong> MIT Chhatrapati Sambhajinagar</div>
+        </div>
+      </div>
+    </div>
+    <div style="max-width: 1200px; margin: var(--s5) auto 0 auto; padding-top: var(--s3); border-top: 1px solid #1E293B; text-align: center; font-size: var(--fs-caption); color: #64748B;">
+      RailSafar HCI CIE-1 Academic Prototype &bull; Pure HTML5 &amp; CSS3 &bull; All currency in Indian Rupees (₹)
+    </div>
+  </footer>
+
+</body>
+</html>
