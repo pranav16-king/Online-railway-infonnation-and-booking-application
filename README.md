@@ -1,7 +1,7 @@
 # RailSafar — Online Railway Information and Booking Application
 
 **Continuous Internal Evaluation - 1 (CIE-1) Prototype & Usability Engineering Implementation**  
-**Department of Computer Science and Design**  
+**Department of Emerging Science and Technology**  
 **Maharashtra Institute of Technology, Chhatrapati Sambhajinagar (An Autonomous Institute)**  
 
 ---
@@ -13,7 +13,8 @@
 | **Student Name** | Pranav Samadhan Khaire |
 | **Roll Number** | 49 |
 | **Class & Division** | Third Year B.Tech (TY-C) |
-| **Branch / Department** | Computer Science and Design |
+| **Branch** | Computer Science and Design |
+| **Department** | Emerging Science and Technology |
 | **Subject / Course** | Human-Computer Interaction (HCI) |
 | **Course Coordinator / Teacher** | Mr. D. V. Thombare |
 | **Head of Department (HoD)** | Dr. K. V. Bhosale |
